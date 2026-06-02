@@ -26,14 +26,18 @@ export const POST: APIRoute = async ({ request }) => {
 
     const stripe = new Stripe(stripeSecret);
     
-    // Search completed Stripe Checkout Sessions for this email
-    console.log(`Searching Stripe completed sessions for email: ${email}`);
-    const searchResult = await stripe.checkout.sessions.search({
-      query: `customer_details.email:'${email}' AND status:'complete'`,
-      limit: 1
+    // List recent completed Stripe Checkout Sessions and filter by email
+    console.log(`Listing Stripe completed sessions for email: ${email}`);
+    const sessionsList = await stripe.checkout.sessions.list({
+      limit: 100
     });
 
-    if (searchResult.data.length === 0) {
+    const session = sessionsList.data.find(s => 
+      s.status === 'complete' && 
+      s.customer_details?.email?.toLowerCase() === email.toLowerCase()
+    );
+
+    if (!session) {
       // Return 200 to prevent email harvesting, but don't send any email
       console.log(`No completed checkout sessions found for email: ${email}`);
       return new Response(JSON.stringify({ success: true, message: 'Ak e-mail evidujeme, odkaz bol odoslaný.' }), {
@@ -42,7 +46,6 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const session = searchResult.data[0];
     const courseName = session.metadata?.course_name || 'Kurz: Automatizácia firiem pomocou AI agentov v roku 2026';
     const customerName = session.customer_details?.name || 'Vzdelávateľ';
 
