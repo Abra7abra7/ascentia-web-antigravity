@@ -7,6 +7,8 @@ import Footer from '../components/Footer.astro';
 // We extract the URL search param or fallback to a default course name
 const courseTitle = Astro.url.searchParams.get('course') || "Prémiový Kurz Ascentia";
 const whatsappSupportNumber = import.meta.env.PUBLIC_WHATSAPP_SUPPORT_NUMBER || import.meta.env.WHATSAPP_SUPPORT_NUMBER || process.env.WHATSAPP_SUPPORT_NUMBER || "421944123456";
+const sessionId = Astro.url.searchParams.get('session_id') || "";
+const orderId = sessionId ? `ASC-2026-${sessionId.slice(-5).toUpperCase()}` : "ASC-2026-TEST";
 
 // Set a cookie so the homepage knows the user purchased this course
 Astro.cookies.set('ascentia_purchased_course', courseTitle, {
@@ -30,12 +32,27 @@ Astro.cookies.set('ascentia_purchased_course', courseTitle, {
           </svg>
         </div>
         <h1 class="text-3xl md:text-4xl font-black text-zinc-50 tracking-tight mb-2">Platba prebehla úspešne!</h1>
-        <p class="text-emerald-400 font-bold text-sm tracking-wider uppercase mb-4">Prístup bol údomknutý</p>
+        <p class="text-emerald-400 font-bold text-sm tracking-wider uppercase mb-4">Prístup bol odomknutý</p>
+        
+        <div class="p-3 bg-zinc-950/60 border border-zinc-800 rounded-xl max-w-xs mx-auto mb-6 text-xs text-zinc-300 font-mono">
+          Číslo objednávky: <span class="text-zinc-50 font-bold">{orderId}</span>
+        </div>
+
         <div class="h-[1px] bg-zinc-800 my-4 max-w-xs mx-auto"></div>
-        <p class="text-zinc-400 text-sm max-w-md mx-auto">
+        <p class="text-zinc-400 text-sm max-w-md mx-auto mb-6">
           Práve ste získali doživotný prístup k vzdelávaciemu modulu: <br />
           <strong class="text-zinc-200">{courseTitle}</strong>.
         </p>
+
+        <!-- Company Billing Info (EU Legal Compliance) -->
+        <div class="border-t border-zinc-800 pt-6 text-left max-w-md mx-auto text-[11px] text-zinc-500 space-y-1">
+          <p class="font-bold text-zinc-400 uppercase tracking-wider mb-1">Dodávateľ (Prevádzkovateľ):</p>
+          <p class="font-semibold text-zinc-400">ASCENTIA s. r. o.</p>
+          <p>Sídlo: Klincová 37/B, Bratislava - mestská časť Ružinov 821 08</p>
+          <p>IČO: 51 858 959 | DIČ: 2120815124</p>
+          <p class="text-[10px]">Zapísaná v Obchodnom registri Okresného súdu Bratislava I, Oddiel: Sro, Vložka č.: 130325/B</p>
+          <p class="text-[10px] pt-1 text-zinc-600">Doklad o zaplatení a faktúra Vám boli odoslané e-mailom.</p>
+        </div>
       </div>
 
       <!-- Course Workspace / Video Lesson -->

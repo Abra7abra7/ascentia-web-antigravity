@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request }) => {
         },
       ],
       mode: 'payment',
-      success_url: `${origin}/nakupe-uspesny?course=${encodeURIComponent(courseName)}`,
+      success_url: `${origin}/nakupe-uspesny?course=${encodeURIComponent(courseName)}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/`,
       metadata: {
         course_name: courseName

@@ -101,12 +101,44 @@
   }
 
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      // Hide form fields, show success confirmation
-      form.classList.add('hidden');
-      if (successDiv) {
-        successDiv.classList.remove('hidden');
+      
+      const emailInput = document.getElementById('w-email') as HTMLInputElement | null;
+      const orderInput = document.getElementById('w-order-id') as HTMLInputElement | null;
+      if (!emailInput || !orderInput) return;
+
+      const email = emailInput.value.trim();
+      const orderId = orderInput.value.trim();
+
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Odosielam...';
+      }
+
+      try {
+        const response = await fetch('/api/withdraw', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, orderId })
+        });
+        
+        if (response.ok) {
+          form.classList.add('hidden');
+          if (successDiv) {
+            successDiv.classList.remove('hidden');
+          }
+        } else {
+          alert('Nepodarilo sa overiť požiadavku. Skontrolujte zadané údaje.');
+        }
+      } catch (err) {
+        alert('Chyba pripojenia k serveru.');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Potvrdiť odstúpenie od zmluvy';
+        }
       }
     });
   }
