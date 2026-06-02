@@ -4,10 +4,31 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import AIOnboarding from '../components/AIOnboarding.svelte';
+
+const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
 ---
 
 <Layout>
   <Header />
+
+  {purchasedCourse && (
+    <div class="bg-gradient-to-r from-violet-950/40 to-emerald-950/40 border-b border-zinc-800 py-4 text-center">
+      <div class="mx-auto max-w-7xl px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="flex h-3 w-3 rounded-full bg-emerald-400 animate-pulse"></span>
+          <p class="text-sm font-medium text-zinc-200">
+            Máte aktívny prístup k: <strong class="text-zinc-50">{purchasedCourse}</strong>
+          </p>
+        </div>
+        <a
+          href={`/nakupe-uspesny?course=${encodeURIComponent(purchasedCourse)}`}
+          class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-zinc-50 font-bold px-5 py-2.5 text-xs transition-colors shadow-lg shadow-emerald-900/30"
+        >
+          Vstúpiť do členskej sekcie &rarr;
+        </a>
+      </div>
+    </div>
+  )}
   
   <main class="flex-grow">
     <!-- Hero Section -->
@@ -74,49 +95,152 @@ import AIOnboarding from '../components/AIOnboarding.svelte';
       </div>
     </section>
 
-    <!-- Static Courses Section -->
-    <section id="courses" class="py-20 border-t border-zinc-900">
+    <!-- Detailed Courses Section -->
+    <section id="courses" class="py-20 border-t border-zinc-900 bg-zinc-950">
       <div class="mx-auto max-w-7xl px-6 md:px-8">
-        <h2 class="text-3xl md:text-5xl font-black tracking-tight text-zinc-50 mb-12 text-center">
-          Naše prémiové programy
-        </h2>
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-5xl font-black tracking-tight text-zinc-50 mb-4">
+            Naše prémiové programy
+          </h2>
+          <p class="text-zinc-400 max-w-md mx-auto text-sm">
+            Praktické a hĺbkové vzdelávanie zamerané na okamžité uplatnenie v praxi s podporou komunity.
+          </p>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <!-- Course Card 1 -->
-          <div class="rounded-2xl border border-zinc-850 bg-zinc-900/30 p-6 flex flex-col justify-between hover:border-zinc-800 transition-all group">
+          <div class="rounded-2xl border border-zinc-850 bg-zinc-900/40 p-6 md:p-8 flex flex-col justify-between hover:border-violet-500/30 transition-all duration-300 group shadow-2xl relative">
             <div>
               <div class="relative overflow-hidden rounded-xl mb-6">
-                <img src="/course-thumb.svg" alt="Course 1" class="w-full transition-transform duration-300 group-hover:scale-102" />
+                <img src="/course-thumb.svg" alt="Course 1" class="w-full transition-transform duration-555 group-hover:scale-102" />
+                <span class="absolute top-3 left-3 bg-violet-600/90 text-zinc-50 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">Best Seller</span>
               </div>
-              <h3 class="text-2xl font-bold text-zinc-100 mb-2">Automatizácia firiem pomocou AI agentov</h3>
+              <h3 class="text-2xl md:text-3xl font-black text-zinc-100 mb-3 tracking-tight">Automatizácia firiem pomocou AI agentov</h3>
               <p class="text-zinc-400 text-sm leading-relaxed mb-6">
-                Kompletný návod na nasadenie a prepájanie autonómnych agentov pre e-shopy, podporu a predajné procesy. Ušetrite desiatky hodín týždenne.
+                Kompletný systém nasadenia autonómnych AI agentov, prepojenia podnikových databáz a integrácie multi-agentových tímov, ktoré ušetria tisíce hodín manuálnej práce.
               </p>
+              
+              <!-- Syllabus List -->
+              <div class="space-y-4 border-t border-zinc-800 pt-6 mb-8">
+                <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Podrobný plán lekcií</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start gap-3">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-violet-400 text-xs font-bold">1</span>
+                    <div>
+                      <p class="text-sm font-semibold text-zinc-200">Základy a architektúra pre rok 2026</p>
+                      <p class="text-xs text-zinc-500">Čo sú to autonómni agenti, LLM orchestrácia a kľúčové frameworky.</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-violet-400 text-xs font-bold">2</span>
+                    <div>
+                      <p class="text-sm font-semibold text-zinc-200">Vektorové databázy, pamäť a RAG</p>
+                      <p class="text-xs text-zinc-500">Práca s podnikovými dátami v reálnom čase (Supabase, Pinecone, embeddings).</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-violet-400 text-xs font-bold">3</span>
+                    <div>
+                      <p class="text-sm font-semibold text-zinc-200">Integrácia s API a Low-Code workflows</p>
+                      <p class="text-xs text-zinc-500">Prepojenie n8n, Make.com a custom Node.js scriptov s externými službami.</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-violet-400 text-xs font-bold">4</span>
+                    <div>
+                      <p class="text-sm font-semibold text-zinc-200">Nasadenie AI do e-shopov a zákazníckej podpory</p>
+                      <p class="text-xs text-zinc-500">Projektová časť – automatické vybavovanie objednávok a inteligentný e-mailový support.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Key details badge grid -->
+              <div class="grid grid-cols-2 gap-3 mb-8">
+                <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-center">
+                  <span class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Rozsah videa</span>
+                  <span class="text-sm font-bold text-zinc-200">24+ hodín obsahu</span>
+                </div>
+                <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-center">
+                  <span class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Materiály</span>
+                  <span class="text-sm font-bold text-zinc-200">15+ praktických šablón</span>
+                </div>
+              </div>
             </div>
-            <a href="#onboarding" class="text-violet-400 hover:text-violet-300 font-bold text-sm flex items-center gap-2">
-              Spustiť konfigurátor &rarr;
+            
+            <a href="#onboarding" class="w-full text-center rounded-xl bg-violet-600 hover:bg-violet-750 text-zinc-50 font-bold py-3 text-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+              Spustiť konfigurátor a zakúpiť &rarr;
             </a>
           </div>
 
           <!-- Course Card 2 -->
-          <div class="rounded-2xl border border-zinc-850 bg-zinc-900/30 p-6 flex flex-col justify-between hover:border-zinc-800 transition-all group">
+          <div class="rounded-2xl border border-zinc-850 bg-zinc-900/40 p-6 md:p-8 flex flex-col justify-between hover:border-violet-500/30 transition-all duration-300 group shadow-2xl relative">
             <div>
               <div class="relative overflow-hidden rounded-xl mb-6">
-                <img src="/course-thumb.svg" alt="Course 2" class="w-full transition-transform duration-300 group-hover:scale-102 filter hue-rotate-60" />
+                <img src="/course-thumb.svg" alt="Course 2" class="w-full transition-transform duration-555 group-hover:scale-102 filter hue-rotate-60" />
+                <span class="absolute top-3 left-3 bg-emerald-600/90 text-zinc-50 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">Premium Masterclass</span>
               </div>
-              <h3 class="text-2xl font-bold text-zinc-100 mb-2">Masterclass efektívneho kódovania a LLM</h3>
+              <h3 class="text-2xl md:text-3xl font-black text-zinc-100 mb-3 tracking-tight">Masterclass efektívneho kódovania a LLM</h3>
               <p class="text-zinc-400 text-sm leading-relaxed mb-6">
-                Naučte sa spolupracovať s modernými AI modelmi. Od Prompt Engineeringu po vývoj a produkčný deployment robustných webových aplikácií.
+                Získajte vývojársku superschopnosť. Naučte sa správne integrovať API modelov, budovať LLM-native rozhrania a vyvíjať moderné Jamstack weby v rekordne rýchlom čase.
               </p>
+              
+              <!-- Syllabus List -->
+              <div class="space-y-4 border-t border-zinc-800 pt-6 mb-8">
+                <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Podrobný plán lekcií</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start gap-3">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold">1</span>
+                    <div>
+                      <p class="text-sm font-semibold text-zinc-200">AI-driven workflow pre programátorov</p>
+                      <p class="text-xs text-zinc-500">Efektívne využitie Cursor IDE, Claude 3.5 Sonnet a LLM editorov v dennej praxi.</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold">2</span>
+                    <div>
+                      <p class="text-sm font-semibold text-zinc-200">Vývoj moderných AI aplikácií</p>
+                      <p class="text-xs text-zinc-500">Budovanie architektúry, routing a dynamický rendering (Astro, Svelte, Next.js).</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold">3</span>
+                    <div>
+                      <p class="text-sm font-semibold text-zinc-200">Pokročilé API integrácie a Agentic coding</p>
+                      <p class="text-xs text-zinc-500">Programové pripájanie na OpenAI, Anthropic, LangChain SDK a streamovanie odpovedí.</p>
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold">4</span>
+                    <div>
+                      <p class="text-sm font-semibold text-zinc-200">Produkčný deployment, caching a bezpečnosť</p>
+                      <p class="text-xs text-zinc-500">Projektová časť – deployment na Vercel/Netlify, API limitovanie, streaming a caching promptov.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Key details badge grid -->
+              <div class="grid grid-cols-2 gap-3 mb-8">
+                <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-center">
+                  <span class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Rozsah videa</span>
+                  <span class="text-sm font-bold text-zinc-200">28+ hodín obsahu</span>
+                </div>
+                <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-center">
+                  <span class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Materiály</span>
+                  <span class="text-sm font-bold text-zinc-200">8+ produkčných repozitárov</span>
+                </div>
+              </div>
             </div>
-            <a href="#onboarding" class="text-violet-400 hover:text-violet-300 font-bold text-sm flex items-center gap-2">
-              Spustiť konfigurátor &rarr;
+            
+            <a href="#onboarding" class="w-full text-center rounded-xl bg-emerald-600 hover:bg-emerald-700 text-zinc-50 font-bold py-3 text-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+              Spustiť konfigurátor a zakúpiť &rarr;
             </a>
           </div>
         </div>
       </div>
     </section>
   </main>
-
   <Footer />
 </Layout>
+

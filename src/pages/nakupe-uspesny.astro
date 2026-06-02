@@ -7,6 +7,13 @@ import Footer from '../components/Footer.astro';
 // We extract the URL search param or fallback to a default course name
 const courseTitle = Astro.url.searchParams.get('course') || "Prémiový Kurz Ascentia";
 const whatsappSupportNumber = import.meta.env.PUBLIC_WHATSAPP_SUPPORT_NUMBER || import.meta.env.WHATSAPP_SUPPORT_NUMBER || process.env.WHATSAPP_SUPPORT_NUMBER || "421944123456";
+
+// Set a cookie so the homepage knows the user purchased this course
+Astro.cookies.set('ascentia_purchased_course', courseTitle, {
+  path: '/',
+  maxAge: 60 * 60 * 24 * 365, // 1 year
+  httpOnly: false,
+});
 ---
 
 <Layout title="Nákup úspešný - Ascentia" description="Váš prístup k prémiovému vzdelávaniu bol úspešne odomknutý.">
