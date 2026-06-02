@@ -32,6 +32,21 @@ export const POST: APIRoute = async ({ request }) => {
       const whatsappToken = import.meta.env.WHATSAPP_ACCESS_TOKEN || process.env.WHATSAPP_ACCESS_TOKEN;
       const whatsappPhoneId = import.meta.env.WHATSAPP_PHONE_NUMBER_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
       const templateName = import.meta.env.WHATSAPP_TEMPLATE_NAME || process.env.WHATSAPP_TEMPLATE_NAME || 'ascentia_welcome_course';
+      
+      // Default to en_US for hello_world, else sk or custom env value
+      const defaultLang = templateName === 'hello_world' ? 'en_US' : 'sk';
+      const templateLang = import.meta.env.WHATSAPP_TEMPLATE_LANG || process.env.WHATSAPP_TEMPLATE_LANG || defaultLang;
+
+      // hello_world template doesn't accept parameters
+      const components = templateName === 'hello_world' ? [] : [
+        {
+          type: 'body',
+          parameters: [
+            { type: 'text', text: customerName },
+            { type: 'text', text: courseName }
+          ]
+        }
+      ];
 
       const metaPayload = {
         messaging_product: 'whatsapp',
@@ -39,16 +54,8 @@ export const POST: APIRoute = async ({ request }) => {
         type: 'template',
         template: {
           name: templateName,
-          language: { code: 'sk' },
-          components: [
-            {
-              type: 'body',
-              parameters: [
-                { type: 'text', text: customerName },
-                { type: 'text', text: courseName }
-              ]
-            }
-          ]
+          language: { code: templateLang },
+          components: components
         }
       };
 
@@ -56,7 +63,7 @@ export const POST: APIRoute = async ({ request }) => {
 
       if (whatsappToken && !whatsappToken.startsWith('EAABxxx') && whatsappPhoneId && !whatsappPhoneId.startsWith('123456')) {
         // Real Meta API Call
-        const url = `https://graph.facebook.com/v21.0/${whatsappPhoneId}/messages`;
+        const url = `https://graph.facebook.com/v25.0/${whatsappPhoneId}/messages`;
         console.log(`Sending real WhatsApp template message via Meta API... Target: ${phoneNumber}`);
         
         const response = await fetch(url, {
