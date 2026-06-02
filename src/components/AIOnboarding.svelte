@@ -24,17 +24,35 @@
     step = 3;
   }
 
-  function handleCheckout(e) {
+  async function handleCheckout(e) {
     e.preventDefault();
     if (!isWaiverChecked) {
       alert("Pre pokračovanie musíte súhlasiť s digitálnym vzdaním sa práva na vrátenie.");
       return;
     }
     isCheckingOut = true;
-    setTimeout(() => {
-      // Redirect to mock success page
-      window.location.href = `/nakupe-uspesny?course=${encodeURIComponent(recommendation)}`;
-    }, 1500);
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          courseName: recommendation,
+          price: price
+        })
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Chyba pri vytváraní platobnej relácie: " + (data.error || "Neznáma chyba"));
+        isCheckingOut = false;
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Chyba pripojenia k platobnému systému.");
+      isCheckingOut = false;
+    }
   }
 </script>
 
