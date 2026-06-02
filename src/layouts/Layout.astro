@@ -2,6 +2,7 @@
 // src/layouts/Layout.astro
 import '../styles/global.css';
 import CookieBanner from '../components/CookieBanner.svelte';
+import AIChat from '../components/AIChat.astro';
 
 interface Props {
   title?: string;
@@ -46,21 +47,273 @@ const {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;950&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
     
     <!-- Schema.org Structured Data -->
+    <!-- 1. Organization -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://ascentia-web-antigravity.vercel.app/#organization",
+        "name": "Ascentia",
+        "alternateName": "Ascentia - AI-First & Jamstack Platforma",
+        "description": "Prémiové online kurzy zamerané na AI automatizáciu a pokročilý vývoj v roku 2026.",
+        "url": "https://ascentia-web-antigravity.vercel.app/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ascentia-web-antigravity.vercel.app/logo.svg",
+          "width": 120,
+          "height": 120
+        },
+        "sameAs": [
+          "https://www.facebook.com/ascentia.academy",
+          "https://www.instagram.com/ascentia.academy",
+          "https://www.linkedin.com/company/ascentia-academy"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+421 902 166 388",
+          "contactType": "customer service",
+          "email": "info@ascentia.academy",
+          "availableLanguage": ["Slovak", "Czech", "English"]
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "SK",
+          "addressLocality": "Bratislava",
+          "postalCode": "821 08",
+          "streetAddress": "Klincová 37/B"
+        },
+        "foundingDate": "2026",
+        "legalName": "ASCENTIA s. r. o.",
+        "vatID": "SK2120822602"
+      }
+    </script>
+
+    <!-- 2. WebSite -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "Ascentia",
+        "@id": "https://ascentia-web-antigravity.vercel.app/#website",
         "url": "https://ascentia-web-antigravity.vercel.app/",
-        "description": "AI-First & Jamstack platforma pre prémiové technologické vzdelávanie.",
+        "name": "Ascentia",
+        "description": "AI-First vzdelávacia platforma pre prémiové online kurzy o AI agentoch a modernom vývoji.",
         "publisher": {
-          "@type": "Organization",
-          "name": "ASCENTIA s. r. o.",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://ascentia-web-antigravity.vercel.app/logo.svg"
-          }
+          "@id": "https://ascentia-web-antigravity.vercel.app/#organization"
+        },
+        "inLanguage": "sk",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://ascentia-web-antigravity.vercel.app/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
         }
+      }
+    </script>
+
+    <!-- 3. Course 1: AI Automatizácia -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "@id": "https://ascentia-web-antigravity.vercel.app/#course-ai-automatizacia",
+        "name": "Automatizácia firiem pomocou AI agentov",
+        "description": "Kompletný systém nasadenia autonómnych AI agentov, prepojenia podnikových databáz a integrácie multi-agentových tímov, ktoré ušetria tisíce hodín manuálnej práce.",
+        "url": "https://ascentia-web-antigravity.vercel.app/",
+        "provider": {
+          "@type": "Organization",
+          "@id": "https://ascentia-web-antigravity.vercel.app/#organization",
+          "name": "Ascentia",
+          "sameAs": "https://ascentia-web-antigravity.vercel.app/"
+        },
+        "inLanguage": "sk",
+        "educationalCredentialAwarded": "Certifikát o absolvovaní kurzu",
+        "teaches": [
+          "Autonómne AI agenty",
+          "LLM orchestrácia a frameworky",
+          "Vektorové databázy (Pinecone, Supabase)",
+          "RAG (Retrieval-Augmented Generation)",
+          "Integrácia s n8n, Make.com a Node.js",
+          "Nasadenie AI do e-shopov a zákazníckej podpory"
+        ],
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": ["Online"],
+          "courseWorkload": "PT24H",
+          "inLanguage": "sk",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "EUR",
+            "price": "249.00",
+            "priceValidUntil": "2026-12-31",
+            "availability": "https://schema.org/InStock",
+            "url": "https://ascentia-web-antigravity.vercel.app/",
+            "validFrom": "2026-01-01",
+            "category": "Digital educational course",
+            "itemCondition": "https://schema.org/NewCondition"
+          }
+        },
+        "timeRequired": "P24H"
+      }
+    </script>
+
+    <!-- 4. Course 2: Masterclass kódovania -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "@id": "https://ascentia-web-antigravity.vercel.app/#course-masterclass-kodovanie",
+        "name": "Masterclass efektívneho kódovania a LLM",
+        "description": "Zvládnite Next.js, Astro, LLM API integrácie, vektorové databázy a deployment moderných AI-driven aplikácií v roku 2026.",
+        "url": "https://ascentia-web-antigravity.vercel.app/",
+        "provider": {
+          "@type": "Organization",
+          "@id": "https://ascentia-web-antigravity.vercel.app/#organization",
+          "name": "Ascentia",
+          "sameAs": "https://ascentia-web-antigravity.vercel.app/"
+        },
+        "inLanguage": "sk",
+        "educationalCredentialAwarded": "Certifikát o absolvovaní kurzu",
+        "teaches": [
+          "Next.js a Astro frameworky",
+          "LLM API integrácie (OpenAI, Anthropic, OpenRouter)",
+          "Vektorové databázy a embeddingy",
+          "Moderný deployment v roku 2026",
+          "Vývoj AI-driven aplikácií"
+        ],
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": ["Online"],
+          "courseWorkload": "PT28H",
+          "inLanguage": "sk",
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "EUR",
+            "price": "299.00",
+            "priceValidUntil": "2026-12-31",
+            "availability": "https://schema.org/InStock",
+            "url": "https://ascentia-web-antigravity.vercel.app/",
+            "validFrom": "2026-01-01",
+            "category": "Digital educational course",
+            "itemCondition": "https://schema.org/NewCondition"
+          }
+        },
+        "timeRequired": "PT28H"
+      }
+    </script>
+
+    <!-- 5. FAQPage -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": "https://ascentia-web-antigravity.vercel.app/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Pre koho sú kurzy Ascentie vhodné?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Kurzy Ascentie sú určené pre majiteľov firiem, manažérov, podnikateľov a vývojárov, ktorí chcú prakticky využiť AI na automatizáciu a vývoj moderných aplikácií. Niektoré kurzy sú vhodné aj pre úplných začiatočníkov."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Potrebujem vedieť programovať, aby som absolvoval kurz?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Pre kurz Automatizácia firiem pomocou AI agentov nie je potrebné vedieť programovať – je navrhnutý pre biznis používateľov. Pre Masterclass kódovania a LLM sa odporúča aspoň základná znalosť programovania."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Ako dlho mám prístup ku kurzu?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Po zakúpení kurzu získavate doživotný prístup ku všetkým materiálom vrátane budúcich aktualizácií. Môžete študovať vlastným tempom."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Môžem vrátiť peniaze, ak mi kurz nebude vyhovovať?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ak neudelíte súhlas s okamžitým dodaním digitálneho obsahu pred uplynutím 14-dňovej lehoty na odstúpenie, máte 14 dní na odstúpenie od zmluvy bez udania dôvodu. V opačnom prípade strácate právo na odstúpenie v súlade s čl. 16 písm. m) Smernice 2011/83/EÚ."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Dostanem certifikát po absolvovaní kurzu?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Áno, po úspešnom absolvovaní kurzu získate certifikát o absolvovaní, ktorý môžete použiť vo svojom CV alebo na LinkedIn."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "V akej forme sú kurzy dodávané?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Všetky kurzy sú výhradne online. Po zakúpení získate prístup k video lekciám, PDF materiálom, šablónam a bonusovým zdrojom cez svoje používateľské konto."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Čo je to RAG a naučím sa to v kurze?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "RAG (Retrieval-Augmented Generation) je technika, ktorá umožňuje LLM modelom pracovať s vašimi vlastnými dátami. V kurze Automatizácia firiem pomocou AI agentov sa naučíte vytvárať RAG pipelines s Pinecone a Supabase v reálnom čase."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- 6. BreadcrumbList -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "@id": "https://ascentia-web-antigravity.vercel.app/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Domov",
+            "item": "https://ascentia-web-antigravity.vercel.app/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Kurzy",
+            "item": "https://ascentia-web-antigravity.vercel.app/#courses"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Automatizácia firiem pomocou AI agentov",
+            "item": "https://ascentia-web-antigravity.vercel.app/"
+          }
+        ]
+      }
+    </script>
+
+    <!-- 7. Person -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "@id": "https://ascentia-web-antigravity.vercel.app/#person",
+        "name": "Matúš Stančík",
+        "givenName": "Matúš",
+        "familyName": "Stančík",
+        "jobTitle": "Zakladateľ a lektor",
+        "affiliation": {
+          "@id": "https://ascentia-web-antigravity.vercel.app/#organization"
+        },
+        "knowsAbout": ["Artificial Intelligence", "Machine Learning", "Software Development", "AI Agents", "Automation"],
+        "url": "https://ascentia-web-antigravity.vercel.app/"
       }
     </script>
     
@@ -69,6 +322,7 @@ const {
   <body class="bg-[#09090B] text-zinc-400 font-sans min-h-screen flex flex-col antialiased selection:bg-violet-600 selection:text-white">
     <slot />
     <CookieBanner client:load />
+    <AIChat />
   </body>
 </html>
 

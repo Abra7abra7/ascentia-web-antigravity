@@ -1,0 +1,29 @@
+---
+// src/components/AIChat.astro
+---
+
+<!-- Inject Botpress WebChat Script -->
+<script src="https://cdn.botpress.cloud/webchat/v0/inject.js" is:inline></script>
+
+<script is:inline>
+  window.addEventListener('load', () => {
+    if (window.botpressWebChat) {
+      window.botpressWebChat.init({
+        botId: "ascentia-ai-twin",
+        hostUrl: "https://cdn.botpress.cloud/webchat",
+        messagingUrl: "https://messaging.botpress.cloud",
+        clientId: "ascentia-ai-twin-client",
+        useMessageList: true,
+        showPoweredBy: false,
+        botName: "AI Dvojník (Matúš)",
+        botAvatar: "/logo.svg",
+        enableConversationDeletion: true,
+        disableAnimations: false,
+        hideWidget: false,
+        showCloseButton: true,
+        containerWidth: "380px",
+        layoutWidth: "380px",
+      });
+    }
+  });
+</script>
