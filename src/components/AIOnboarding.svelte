@@ -7,6 +7,8 @@
   let isWaiverChecked = $state(false);
   let isCheckingOut = $state(false);
 
+  import { onMount } from 'svelte';
+
   function processGoal(goal) {
     userGoal = goal;
     step = 2;
@@ -23,6 +25,20 @@
     }
     step = 3;
   }
+
+  onMount(() => {
+    window.selectCourse = (courseId) => {
+      if (courseId === 'automation') {
+        recommendation = "Kurz: Automatizácia firiem pomocou AI agentov v roku 2026";
+        price = 249;
+      } else if (courseId === 'code') {
+        recommendation = "Kurz: Masterclass efektívneho kódovania a LLM integrácií";
+        price = 299;
+      }
+      step = 3;
+      document.getElementById('onboarding')?.scrollIntoView({ behavior: 'smooth' });
+    };
+  });
 
   async function handleCheckout(e) {
     e.preventDefault();
@@ -43,6 +59,33 @@
       });
       const data = await response.json();
       if (data.url) {
+        if (data.isMock) {
+          try {
+            await fetch('/api/whatsapp-notification', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                type: 'checkout.session.completed',
+                data: {
+                  object: {
+                    id: 'mock_session_' + Date.now(),
+                    customer_details: {
+                      name: 'Ascentia Študent',
+                      email: 'student@ascentia.academy',
+                      phone: '+421944123456'
+                    },
+                    amount_total: price * 100,
+                    metadata: {
+                      course_name: recommendation
+                    }
+                  }
+                }
+              })
+            });
+          } catch (e) {
+            console.error("Mock webhook trigger error:", e);
+          }
+        }
         window.location.href = data.url;
       } else {
         alert("Chyba pri vytváraní platobnej relácie: " + (data.error || "Neznáma chyba"));

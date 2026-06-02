@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "rychle-tipy-pre-low-code-1780400550013",
+    "title": "5 rýchlych tipov pre efektívnu low-code automatizáciu",
+    "excerpt": "Ako prepojiť vaše podnikové aplikácie rýchlo, lacno a bez zložitého programovania.",
+    "date": "2026-06-02",
+    "author": "Ascentia Autopilot",
+    "readTime": "3 min",
+    "image": "/blog-agenti.png",
+    "content": "## Low-Code mení biznis\n\nLow-code nástroje ako **n8n** a **Make** umožňujú komukoľvek automatizovať zložité procesy. Tu je 5 rýchlych tipov na začiatok:\n\n- **Začnite v malom**: Automatizujte najskôr jednoduché úlohy (napr. posielanie notifikácií o nových objednávkach do Slacku).\n- **Používajte jednotný formát dát**: JSON je priemyselný štandard, naučte sa s ním pracovať.\n- **Ošetrujte chyby**: Nastavte si e-mailové upozornenia v prípade zlyhania scenára.\n- **Bezpečnosť na prvom mieste**: Nikdy nevkladajte API kľúče priamo do kódových blokov, používajte premenné prostredia.\n- **Vzdelávajte sa kontinuálne**: low-code sa neustále vyvíja.\n\nAk sa chcete naučiť low-code automatizáciu na profesionálnej úrovni, navštívte náš kurz **Automatizácia firiem pomocou AI agentov**."
+  },
+  {
+    "slug": "ako-ai-agenti-menia-hru-v-biznise",
+    "title": "Ako AI agenti menia hru v podnikaní pre rok 2026",
+    "excerpt": "Zistite, ako autonómne multi-agentové systémy pomáhajú firmám ušetriť tisíce hodín manuálnej práce a zefektívniť zákaznícku podporu.",
+    "date": "2026-06-01",
+    "author": "Ascentia Autopilot",
+    "readTime": "5 min",
+    "image": "/blog-agenti.png",
+    "content": "## Budúcnosť práce je autonómna\n\nV roku 2026 sa už nebavíme o tom, či umelá inteligencia nahradí niektoré úlohy, ale o tom, ako rýchlo dokážu firmy nasadiť **autonómnych AI agentov** do svojich každodenných procesov. AI agenti nie sú len pasívne chatboty; sú to inteligentné systémy schopné samostatne plánovať, rozhodovať sa a spolupracovať v tímoch.\n\n### Čo robí AI agenta výnimočným?\n\n1. **Autonómia**: Dokáže prijať komplexný cieľ (napr. \"vybav reklamácie za posledný týždeň\") a rozložiť ho na podúlohy bez zásahu človeka.\n2. **Práca s nástrojmi**: Agenti vedia pristupovať k API, čítať podnikové databázy, odosielať e-maily a spúšťať low-code workflows (napr. cez n8n alebo Make).\n3. **Učenie a pamäť**: Použitím vektorových databáz (RAG - Retrieval-Augmented Generation) majú agenti prístup k aktuálnym firemným materiálom a pamätajú si predchádzajúce interakcie.\n\n### Prípadová štúdia: Automatizácia zákazníckej podpory\n\nPredstavte si stredne veľký e-shop, ktorý denne dostáva stovky e-mailov. Bežný systém vyžaduje tím ľudí na triedenie a odpovedanie. AI agent dokáže:\n\n- Prečítať prichádzajúci e-mail.\n- Vyhľadať objednávku v SQL databáze podľa e-mailu odosielateľa.\n- Zistiť stav zásielky cez API prepravcu.\n- Vygenerovať personalizovanú, empatickú odpoveď v slovenčine s presnými informáciami.\n- Ak zákazník požaduje storno, agent preverí podmienky a automaticky vytvorí požiadavku v účtovnom systéme.\n\nCelý proces trvá menej ako 30 sekúnd a stojí zlomok centu. Ľudský operátor zasahuje len pri neštandardných situáciách.\n\n### Ako začať?\n\nPrechod na AI-first firmu si vyžaduje pochopenie troch pilierov:\n- **LLM modely**: Výber správnego modelu (Claude 3.5 Sonnet, GPT-4o, Llama 3) pre danú úlohu.\n- **Dátová integrácia**: Prepájanie systémov a zabezpečenie dát.\n- **Orchestrácia**: Nastavenie pravidiel správania a limitov pre agentov.\n\nV našom kurze **Automatizácia firiem pomocou AI agentov** vás týmto procesom prevedieme krok za krokom, od úplných základov až po produkčné nasadenie."
+  },
+  {
+    "slug": "moderny-vyvoj-webu-pomocou-llm",
+    "title": "Moderný vývoj webu pomocou LLM a Cursor IDE",
+    "excerpt": "Naučte sa, ako efektívne programovať s podporou umelej inteligencie, využívať Cursor IDE a urýchliť dodanie projektov až desaťnásobne.",
+    "date": "2026-05-30",
+    "author": "Ascentia Autopilot",
+    "readTime": "4 min",
+    "image": "/blog-coding.png",
+    "content": "## Nová éra kódovania\n\nProgramovanie prešlo za posledné roky obrovskou transformáciou. Zatiaľ čo v minulosti vývojári trávili hodiny hľadaním syntaktických chýb na Stack Overflow, dnes spolupracujú s pokročilými AI modelmi priamo v editore kódu. Nástroje ako **Cursor IDE** posúvajú túto efektivitu na novú úroveň.\n\n### Prečo je Cursor IDE obľúbený medzi AI vývojármi?\n\nNa rozdiel od bežných copilotov, Cursor rozumie celému vášmu repozitáru ( codebase index ). Umožňuje vám:\n\n- **@ mentions**: Môžete označiť konkrétne súbory, dokumentáciu alebo databázovú schému a opýtať sa modelu otázku s plným kontextom.\n- **Composer mode**: Umožňuje modelom navrhovať a upravovať viacero súborov naraz, čím dokáže vytvoriť celé funkcie alebo komponenty na jedno zadanie.\n- **Rýchly refactoring**: Jednoduchým stlačením klávesovej skratky môžete prepísať starý kód do modernejšej syntaxe.\n\n### Best practices pre AI-assisted vývoj\n\nAk chcete z AI vyťažiť maximum, musíte sa naučiť s ňou správne komunikovať:\n\n1. **Buďte špecifickí**: Namiesto \"oprav túto funkciu\" napíšte \"optimalizuj túto funkciu pre minimalizaciju databázových dopytov a pridajte typovú kontrolu pre parameter X\".\n2. **Kód ako stavebnica**: Rozdeľte aplikáciu na malé, čisté komponenty. AI modely fungujú podstatne lepšie, ak pracujú so súbormi do 200 riadkov.\n3. **Neprestávajte kód kontrolovať**: AI je skvelý kopilot, ale vy ste kapitán. Vždy prejdite navrhnutý kód, spustite testy a overte logiku.\n\n### Záver\n\nAI-assisted coding neodstráni potrebu programátorov, ale vytvorí obrovskú priepasť medzi tými, ktorí tieto nástroje ovládajú, a tými, ktorí zostali pri starých postupoch. Chcete patriť na stranu víťazov? Pripojte sa k nášmu **Masterclassu efektívneho kódovania a LLM integrácií**."
+  }
+]

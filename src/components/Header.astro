@@ -1,6 +1,8 @@
 ---
 // src/components/Header.astro
-const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
+const purchasedCoursesCookie = Astro.cookies.get('ascentia_purchased_courses')?.value;
+const purchasedCourseLegacy = Astro.cookies.get('ascentia_purchased_course')?.value;
+const hasAccess = purchasedCoursesCookie || purchasedCourseLegacy;
 ---
 <header class="sticky top-0 z-50 w-full border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
   <div class="mx-auto flex max-w-7xl h-16 items-center justify-between px-6 md:px-8">
@@ -13,33 +15,32 @@ const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
 
     <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
       <a href="/" class="transition-colors hover:text-zinc-50">Domov</a>
-      {purchasedCourse ? (
-        <a href={`/nakupe-uspesny?course=${encodeURIComponent(purchasedCourse)}`} class="transition-colors text-emerald-400 hover:text-emerald-300">Môj Kurz</a>
-      ) : (
-        <>
-          <a href="/#onboarding" class="transition-colors hover:text-zinc-50">AI Sprievodca</a>
-          <a href="/prihlasenie" class="transition-colors text-violet-400 hover:text-violet-300 font-semibold">Prihlásiť sa</a>
-        </>
-      )}
-      <a href="/vop" class="transition-colors hover:text-zinc-50">Obchodné podmienky</a>
-      <a href="/gdpr" class="transition-colors hover:text-zinc-50">GDPR</a>
+      <a href="/#courses" class="transition-colors hover:text-zinc-50">Programy</a>
+      <a href="/#onboarding" class="transition-colors hover:text-zinc-50">AI Sprievodca</a>
+      <a href="/blog" class="transition-colors hover:text-zinc-50">Blog</a>
     </nav>
 
-    <div class="flex items-center gap-4">
-      {purchasedCourse ? (
-        <a
-          href={`/nakupe-uspesny?course=${encodeURIComponent(purchasedCourse)}`}
-          class="relative inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-zinc-50 transition-all hover:bg-emerald-700 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-        >
-          Odomknutý Kurz
-        </a>
+    <div class="flex items-center gap-6">
+      {hasAccess ? (
+        <>
+          <a href="/nakupe-uspesny" class="transition-colors text-emerald-400 hover:text-emerald-300 text-sm font-semibold">Moja sekcia</a>
+          <a
+            href="/nakupe-uspesny"
+            class="relative inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-zinc-50 transition-all hover:bg-emerald-700 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+          >
+            Vstúpiť do kurzu
+          </a>
+        </>
       ) : (
-        <a
-          href="/#onboarding"
-          class="relative inline-flex items-center justify-center rounded-xl bg-violet-600 px-4 py-2 text-xs font-bold text-zinc-50 transition-all hover:bg-violet-700 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)]"
-        >
-          Spustiť vzostup
-        </a>
+        <>
+          <a href="/prihlasenie" class="transition-colors text-zinc-400 hover:text-zinc-50 text-sm font-medium">Prihlásiť sa</a>
+          <a
+            href="/#onboarding"
+            class="relative inline-flex items-center justify-center rounded-xl bg-violet-600 px-4 py-2 text-xs font-bold text-zinc-50 transition-all hover:bg-violet-700 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)]"
+          >
+            Spustiť vzostup
+          </a>
+        </>
       )}
     </div>
   </div>

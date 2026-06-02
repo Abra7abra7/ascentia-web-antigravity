@@ -1,0 +1,111 @@
+---
+// src/pages/blog/[slug].astro
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import posts from '../../data/posts.json';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const post = posts.find((p) => p.slug === slug);
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// Simple markdown parsing helper
+function formatContent(md: string) {
+  let html = md;
+  // Headings
+  html = html.replace(/^## (.*$)/gim, '<h2 class="text-2xl md:text-3xl font-black text-zinc-50 mt-10 mb-4 tracking-tight border-b border-zinc-800 pb-2">$1</h2>');
+  html = html.replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold text-zinc-100 mt-8 mb-3">$1</h3>');
+  // Bold & Italic
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="text-zinc-100 font-semibold">$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em class="text-zinc-300">$1</em>');
+  // Lists
+  html = html.replace(/^- (.*$)/gim, '<li class="flex items-start gap-3 text-zinc-300 ml-2 mb-3"><span class="text-violet-400 font-bold shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-violet-500"></span><span>$1</span></li>');
+  
+  // Paragraphs (wrap blocks separated by double newlines)
+  const paragraphs = html.split('\n\n');
+  const formatted = paragraphs.map(p => {
+    // If it's already an HTML tag (like heading or list), don't wrap in <p>
+    if (p.trim().startsWith('<h') || p.trim().startsWith('<li') || p.trim().startsWith('<ul')) {
+      return p;
+    }
+    return `<p class="mb-6 text-zinc-300 leading-relaxed text-base md:text-lg">${p}</p>`;
+  });
+  
+  return formatted.join('\n');
+}
+
+const htmlContent = formatContent(post.content);
+---
+
+<Layout 
+  title={`${post.title} - Ascentia Blog`} 
+  description={post.excerpt}
+>
+  <Header />
+
+  <main class="flex-grow py-16 md:py-24 relative overflow-hidden bg-zinc-950">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[500px] w-[500px] rounded-full bg-violet-900/10 blur-[130px] pointer-events-none"></div>
+
+    <div class="mx-auto max-w-3xl px-6">
+      <!-- Back to blog -->
+      <a 
+        href="/blog" 
+        class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-violet-400 transition-colors mb-8"
+      >
+        &larr; Späť na zoznam článkov
+      </a>
+
+      <!-- Article Header -->
+      <header class="mb-12">
+        <div class="flex items-center gap-3 text-xs text-zinc-500 mb-4">
+          <span>{post.date}</span>
+          <span>•</span>
+          <span>{post.readTime}</span>
+          <span>•</span>
+          <span class="text-violet-400 font-bold">{post.author}</span>
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black text-zinc-50 tracking-tight leading-tight mb-8">
+          {post.title}
+        </h1>
+        
+        {post.image && (
+          <div class="relative overflow-hidden rounded-2xl border border-zinc-850 aspect-[21/9] mb-8">
+            <img 
+              src={post.image} 
+              alt={post.title} 
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/40 to-transparent"></div>
+          </div>
+        )}
+      </header>
+
+      <!-- Article Content -->
+      <div class="prose prose-invert prose-zinc max-w-none text-zinc-300">
+        <Fragment set:html={htmlContent} />
+      </div>
+
+      <!-- Footer action -->
+      <div class="mt-16 p-8 rounded-2xl border border-zinc-850 bg-zinc-900/20 text-center relative overflow-hidden">
+        <div class="absolute top-0 right-0 h-[200px] w-[200px] rounded-full bg-violet-950/10 blur-3xl -z-10"></div>
+        <h3 class="text-xl md:text-2xl font-black text-zinc-150 mb-3">Chcete ovládať tieto technológie v praxi?</h3>
+        <p class="text-zinc-400 text-sm max-w-md mx-auto mb-6">
+          Vstúpte do našich prémiových AI a vývojárskych programov a začnite svoj vzostup pod vedením expertov.
+        </p>
+        <a 
+          href="/#courses" 
+          class="inline-flex rounded-xl bg-violet-600 hover:bg-violet-750 text-zinc-50 font-bold px-6 py-3 text-sm transition-all hover:shadow-[0_0_20px_rgba(124,58,237,0.3)]"
+        >
+          Prehľad programov
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

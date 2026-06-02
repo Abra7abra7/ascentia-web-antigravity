@@ -72,7 +72,7 @@ const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
         <div class="relative rounded-2xl border border-zinc-800 bg-zinc-900/30 p-2 backdrop-blur-sm">
           <img
             src="/banner.svg"
-            alt="Ascentia Dashboard Mockup"
+            alt="Interaktívny Ascentia dashboard s AI študijným plánovačom a automatizáciou"
             class="w-full rounded-xl border border-zinc-850 shadow-2xl"
           />
         </div>
@@ -112,12 +112,12 @@ const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
           <div class="rounded-2xl border border-zinc-850 bg-zinc-900/40 p-6 md:p-8 flex flex-col justify-between hover:border-violet-500/30 transition-all duration-300 group shadow-2xl relative">
             <div>
               <div class="relative overflow-hidden rounded-xl mb-6">
-                <img src="/course-thumb.svg" alt="Course 1" class="w-full transition-transform duration-555 group-hover:scale-102" />
+                <img src="/course-thumb.svg" alt="Online kurz: Automatizácia firiem pomocou AI agentov a LLM" class="w-full transition-transform duration-555 group-hover:scale-102" />
                 <span class="absolute top-3 left-3 bg-violet-600/90 text-zinc-50 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">Best Seller</span>
               </div>
               <h3 class="text-2xl md:text-3xl font-black text-zinc-100 mb-3 tracking-tight">Automatizácia firiem pomocou AI agentov</h3>
               <p class="text-zinc-400 text-sm leading-relaxed mb-6">
-                Kompletný systém nasadenia autonómnych AI agentov, prepojenia podnikových databáz a integrácie multi-agentových tímov, ktoré ušetria tisíce hodín manuálnej práce.
+                Kompletný system nasadenia autonómnych AI agentov, prepojenia podnikových databáz a integrácie multi-agentových tímov, ktoré ušetria tisíce hodín manuálnej práce.
               </p>
               
               <!-- Syllabus List -->
@@ -156,7 +156,7 @@ const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
               </div>
 
               <!-- Key details badge grid -->
-              <div class="grid grid-cols-2 gap-3 mb-8">
+              <div class="grid grid-cols-2 gap-3 mb-6">
                 <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-center">
                   <span class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Rozsah videa</span>
                   <span class="text-sm font-bold text-zinc-200">24+ hodín obsahu</span>
@@ -166,18 +166,27 @@ const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
                   <span class="text-sm font-bold text-zinc-200">15+ praktických šablón</span>
                 </div>
               </div>
+
+              <!-- Price section -->
+              <div class="flex items-baseline justify-between border-t border-zinc-800 pt-4 mb-6">
+                <span class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Cena programu:</span>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-zinc-500 text-sm line-through">499 €</span>
+                  <span class="text-2xl font-black text-violet-400">249 €</span>
+                </div>
+              </div>
             </div>
             
-            <a href="#onboarding" class="w-full text-center rounded-xl bg-violet-600 hover:bg-violet-750 text-zinc-50 font-bold py-3 text-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
-              Spustiť konfigurátor a zakúpiť &rarr;
-            </a>
+            <button onclick="window.selectCourse('automation')" class="w-full text-center rounded-xl bg-violet-600 hover:bg-violet-700 text-zinc-50 font-bold py-3 text-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+              Zakúpiť a spustiť kurz &rarr;
+            </button>
           </div>
 
           <!-- Course Card 2 -->
           <div class="rounded-2xl border border-zinc-850 bg-zinc-900/40 p-6 md:p-8 flex flex-col justify-between hover:border-violet-500/30 transition-all duration-300 group shadow-2xl relative">
             <div>
               <div class="relative overflow-hidden rounded-xl mb-6">
-                <img src="/course-thumb.svg" alt="Course 2" class="w-full transition-transform duration-555 group-hover:scale-102 filter hue-rotate-60" />
+                <img src="/course-thumb.svg" alt="Online kurz: Masterclass efektívneho kódovania, Cursor IDE a integrácie LLM API" class="w-full transition-transform duration-555 group-hover:scale-102 filter hue-rotate-60" />
                 <span class="absolute top-3 left-3 bg-emerald-600/90 text-zinc-50 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full">Premium Masterclass</span>
               </div>
               <h3 class="text-2xl md:text-3xl font-black text-zinc-100 mb-3 tracking-tight">Masterclass efektívneho kódovania a LLM</h3>
@@ -221,7 +230,7 @@ const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
               </div>
 
               <!-- Key details badge grid -->
-              <div class="grid grid-cols-2 gap-3 mb-8">
+              <div class="grid grid-cols-2 gap-3 mb-6">
                 <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-center">
                   <span class="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Rozsah videa</span>
                   <span class="text-sm font-bold text-zinc-200">28+ hodín obsahu</span>
@@ -231,11 +240,20 @@ const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
                   <span class="text-sm font-bold text-zinc-200">8+ produkčných repozitárov</span>
                 </div>
               </div>
+
+              <!-- Price section -->
+              <div class="flex items-baseline justify-between border-t border-zinc-800 pt-4 mb-6">
+                <span class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Cena programu:</span>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-zinc-500 text-sm line-through">599 €</span>
+                  <span class="text-2xl font-black text-emerald-400">299 €</span>
+                </div>
+              </div>
             </div>
             
-            <a href="#onboarding" class="w-full text-center rounded-xl bg-emerald-600 hover:bg-emerald-700 text-zinc-50 font-bold py-3 text-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
-              Spustiť konfigurátor a zakúpiť &rarr;
-            </a>
+            <button onclick="window.selectCourse('code')" class="w-full text-center rounded-xl bg-emerald-600 hover:bg-emerald-700 text-zinc-50 font-bold py-3 text-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+              Zakúpiť a spustiť masterclass &rarr;
+            </button>
           </div>
         </div>
       </div>

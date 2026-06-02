@@ -4,111 +4,264 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
-// We extract the URL search param or fallback to a default course name
-const courseTitle = Astro.url.searchParams.get('course') || "Prémiový Kurz Ascentia";
+const newCourse = Astro.url.searchParams.get('course');
 const whatsappSupportNumber = import.meta.env.PUBLIC_WHATSAPP_SUPPORT_NUMBER || import.meta.env.WHATSAPP_SUPPORT_NUMBER || process.env.WHATSAPP_SUPPORT_NUMBER || "421944123456";
 const sessionId = Astro.url.searchParams.get('session_id') || "";
 const orderId = sessionId ? `ASC-2026-${sessionId.slice(-5).toUpperCase()}` : "ASC-2026-TEST";
 
-// Set a cookie so the homepage knows the user purchased this course
-Astro.cookies.set('ascentia_purchased_course', courseTitle, {
+// Get list of purchased courses from cookies
+const purchasedCoursesCookie = Astro.cookies.get('ascentia_purchased_courses')?.value;
+let purchasedCourses: string[] = [];
+
+if (purchasedCoursesCookie) {
+  try {
+    purchasedCourses = JSON.parse(purchasedCoursesCookie);
+  } catch (e) {
+    if (purchasedCoursesCookie) purchasedCourses = [purchasedCoursesCookie];
+  }
+} else {
+  const legacy = Astro.cookies.get('ascentia_purchased_course')?.value;
+  if (legacy) {
+    purchasedCourses = [legacy];
+  }
+}
+
+// Add newly purchased course if it exists
+if (newCourse && !purchasedCourses.includes(newCourse)) {
+  purchasedCourses.push(newCourse);
+}
+
+// Save updated list in cookies
+Astro.cookies.set('ascentia_purchased_courses', JSON.stringify(purchasedCourses), {
   path: '/',
-  maxAge: 60 * 60 * 24 * 365, // 1 year
+  maxAge: 60 * 60 * 24 * 365,
   httpOnly: false,
 });
+
+if (purchasedCourses.length > 0) {
+  Astro.cookies.set('ascentia_purchased_course', purchasedCourses[purchasedCourses.length - 1], {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+    httpOnly: false,
+  });
+}
+
+// Determine active course
+const activeCourse = Astro.url.searchParams.get('active_course') || newCourse || purchasedCourses[0] || "Kurz: Automatizácia firiem pomocou AI agentov v roku 2026";
+
+// Course details definition
+const isAgentCourse = activeCourse.includes("Automatizácia") || activeCourse.includes("agentov");
+
+const courseData = isAgentCourse ? {
+  title: "Automatizácia firiem pomocou AI agentov v roku 2026",
+  lessonTitle: "Lekcia 1: Architektúra multi-agentových systémov",
+  lessonDesc: "V tejto lekcii si prejdeme základy orchestrácie LLM modelov, konfigurácie pamäte a prvé prepojenie s low-code platformou n8n.",
+  duration: "48 min",
+  resources: [
+    { title: "Schéma orchestrácie agentov (PDF)", link: "/materialy-ascentia.pdf" },
+    { title: "Template pre n8n & Make", link: "#" }
+  ],
+  syllabus: [
+    "Architektúra a orchestrácia pre rok 2026",
+    "Vektorové databázy, pamäť a RAG",
+    "Integrácia s API a Low-Code workflows",
+    "Projekt: Nasadenie AI do e-shopov a supportu"
+  ]
+} : {
+  title: "Masterclass efektívneho kódovania a LLM integrácií",
+  lessonTitle: "Lekcia 1: AI-First vývojárske prostredie",
+  lessonDesc: "Naučte sa efektívne integrovať Cursor IDE, spájať API modelov a riadiť generovanie zložitého kódu pomocou systémových promptov.",
+  duration: "52 min",
+  resources: [
+    { title: "Cheat sheet pre AI promptovanie", link: "/materialy-ascentia.pdf" },
+    { title: "Vzorové GitHub Repozitáre", link: "#" }
+  ],
+  syllabus: [
+    "AI-driven workflow (Cursor & Claude Sonnet)",
+    "Vývoj moderných AI aplikácií (Astro, Svelte)",
+    "Pokročilé API integrácie a Agentic coding",
+    "Produkčný deployment, caching a bezpečnosť"
+  ]
+};
+
+// All available courses
+const ALL_COURSES = [
+  { id: "automation", title: "Kurz: Automatizácia firiem pomocou AI agentov v roku 2026" },
+  { id: "code", title: "Kurz: Masterclass efektívneho kódovania a LLM integrácií" }
+];
 ---
 
-<Layout title="Nákup úspešný - Ascentia" description="Váš prístup k prémiovému vzdelávaniu bol úspešne odomknutý.">
+<Layout title="Členská sekcia - Ascentia" description="Váš prístup k prémiovému technologickému vzdelávaniu.">
   <Header />
 
-  <main class="flex-grow py-16 bg-zinc-950">
-    <div class="mx-auto max-w-4xl px-6 md:px-8">
+  <main class="flex-grow py-12 bg-[#09090B] text-zinc-300 relative overflow-hidden">
+    <div class="absolute top-0 right-1/4 -z-10 h-[400px] w-[400px] rounded-full bg-violet-900/10 blur-[130px] pointer-events-none"></div>
+
+    <div class="mx-auto max-w-7xl px-6 md:px-8">
       
-      <!-- Success Banner -->
-      <div class="rounded-2xl border border-emerald-500/20 bg-emerald-950/10 p-8 text-center mb-12">
-        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500 text-emerald-400 mb-4 animate-bounce">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h1 class="text-3xl md:text-4xl font-black text-zinc-50 tracking-tight mb-2">Platba prebehla úspešne!</h1>
-        <p class="text-emerald-400 font-bold text-sm tracking-wider uppercase mb-4">Prístup bol odomknutý</p>
+      <!-- Grid layout for Dashboard -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <div class="p-3 bg-zinc-950/60 border border-zinc-800 rounded-xl max-w-xs mx-auto mb-6 text-xs text-zinc-300 font-mono">
-          Číslo objednávky: <span class="text-zinc-50 font-bold">{orderId}</span>
-        </div>
-
-        <div class="h-[1px] bg-zinc-800 my-4 max-w-xs mx-auto"></div>
-        <p class="text-zinc-400 text-sm max-w-md mx-auto mb-6">
-          Práve ste získali doživotný prístup k vzdelávaciemu modulu: <br />
-          <strong class="text-zinc-200">{courseTitle}</strong>.
-        </p>
-
-        <!-- Company Billing Info (EU Legal Compliance) -->
-        <div class="border-t border-zinc-800 pt-6 text-left max-w-md mx-auto text-[11px] text-zinc-500 space-y-1">
-          <p class="font-bold text-zinc-400 uppercase tracking-wider mb-1">Dodávateľ (Prevádzkovateľ):</p>
-          <p class="font-semibold text-zinc-400">ASCENTIA s. r. o.</p>
-          <p>Sídlo: Klincová 37/B, Bratislava - mestská časť Ružinov 821 08</p>
-          <p>IČO: 51 858 959 | DIČ: 2120815124</p>
-          <p class="text-[10px]">Zapísaná v Obchodnom registri Okresného súdu Bratislava I, Oddiel: Sro, Vložka č.: 130325/B</p>
-          <p class="text-[10px] pt-1 text-zinc-600">Doklad o zaplatení a faktúra Vám boli odoslané e-mailom.</p>
-        </div>
-      </div>
-
-      <!-- Course Workspace / Video Lesson -->
-      <div class="rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden shadow-2xl">
-        <!-- Video Placeholder Header -->
-        <div class="border-b border-zinc-800 bg-zinc-950 px-6 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-            <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest">Odomknutá lekcia 01</span>
-          </div>
-          <span class="text-xs text-zinc-500">Dĺžka: 45 min</span>
-        </div>
-
-        <!-- Simulated Premium Video Player -->
-        <div class="relative aspect-video w-full bg-zinc-950 flex items-center justify-center group cursor-pointer">
-          <img src="/course-thumb.svg" alt="Video cover" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity group-hover:opacity-40" />
+        <!-- Left Panel: Workspace (Player and materials) - 8 cols -->
+        <div class="lg:col-span-8 space-y-8">
           
-          <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 to-transparent"></div>
+          <!-- Welcome and Payment Confirmation info -->
+          {newCourse && (
+            <div class="p-6 rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/20 to-zinc-950 border-l-4 border-l-emerald-500">
+              <div class="flex items-start gap-4">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 font-bold">✓</span>
+                <div>
+                  <h2 class="text-lg font-black text-zinc-50 tracking-tight">Platba úspešne potvrdená!</h2>
+                  <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                    Ďakujeme za dôveru. Váš prístup k programu <strong>{newCourse}</strong> bol úspešne odomknutý. Objednávka <strong>{orderId}</strong> bola uhradená. Faktúru sme vám zaslali e-mailom a na vaše WhatsApp číslo sme odoslali privítaciu správu s odkazom na skupinu.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
-          <!-- Video Play interface overlay -->
-          <div class="relative z-10 text-center">
-            <button class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-violet-600 border border-violet-500 text-zinc-50 transition-transform duration-300 hover:scale-105 hover:bg-violet-700 hover:shadow-[0_0_30px_rgba(124,58,237,0.6)]">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 ml-1.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </button>
-            <p class="text-xs font-bold text-zinc-300 uppercase tracking-widest mt-4">Prehrať úvodné video</p>
+          <!-- Active Course Display -->
+          <div class="rounded-2xl border border-zinc-850 bg-zinc-900/30 overflow-hidden shadow-2xl backdrop-blur-sm">
+            <div class="border-b border-zinc-850 bg-zinc-950/80 px-6 py-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs font-bold text-zinc-300 uppercase tracking-widest">{courseData.lessonTitle}</span>
+              </div>
+              <span class="text-xs text-zinc-500">Video: {courseData.duration}</span>
+            </div>
+
+            <!-- Simulated Video Player -->
+            <div class="relative aspect-video w-full bg-zinc-950 flex items-center justify-center group cursor-pointer overflow-hidden">
+              <img src="/course-thumb.svg" alt="Video cover" class="absolute inset-0 w-full h-full object-cover opacity-40 transition-transform duration-500 group-hover:scale-101" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 to-transparent"></div>
+
+              <div class="relative z-10 text-center">
+                <button class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-violet-600/90 border border-violet-500 text-zinc-50 transition-transform duration-300 hover:scale-105 hover:bg-violet-750 hover:shadow-[0_0_30px_rgba(124,58,237,0.5)]">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 ml-1.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </button>
+                <p class="text-xs font-bold text-zinc-300 uppercase tracking-widest mt-4">Spustiť prvú lekciu</p>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="p-6 md:p-8 space-y-6">
+              <div>
+                <h3 class="text-2xl font-black text-zinc-100 tracking-tight mb-2">{courseData.title}</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">{courseData.lessonDesc}</p>
+              </div>
+
+              <!-- Workspace Materials Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-zinc-850">
+                <div class="p-4 rounded-xl bg-zinc-950/50 border border-zinc-850">
+                  <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2">Materiály k stiahnutiu</span>
+                  <ul class="space-y-2">
+                    {courseData.resources.map(res => (
+                      <li>
+                        <a href={res.link} class="text-xs text-violet-400 hover:underline flex items-center gap-2">
+                          <span class="text-zinc-600 font-bold">&rarr;</span> {res.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="p-4 rounded-xl bg-zinc-950/50 border border-zinc-850 flex flex-col justify-between">
+                  <div>
+                    <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-1">WhatsApp Skupina</span>
+                    <p class="text-xs text-zinc-400 mb-3">Získajte okamžitú pomoc s touto lekciou od lektora a komunity.</p>
+                  </div>
+                  <a href={`https://wa.me/${whatsappSupportNumber}`} target="_blank" class="w-full text-center rounded-lg bg-emerald-600 hover:bg-emerald-700 text-zinc-50 font-bold py-2 text-xs transition-colors block">
+                    Vstúpiť do WhatsApp podpory
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Course Resources -->
-        <div class="p-6 md:p-8 space-y-6">
-          <div>
-            <h2 class="text-xl font-bold text-zinc-100 mb-2">Ďalšie kroky pre Váš rozvoj</h2>
-            <p class="text-zinc-400 text-sm leading-relaxed">
-              Váš prístup k plnej platforme s diskusným fórom bol taktiež odoslaný na zadaný e-mail. Skontrolujte si aj priečinok so spamom, ak správa nedorazí do 5 minút.
-            </p>
+        <!-- Right Panel: My Courses & Syllabus (4 cols) -->
+        <div class="lg:col-span-4 space-y-8">
+          
+          <!-- My Courses Dashboard Section -->
+          <div class="rounded-2xl border border-zinc-850 bg-zinc-900/20 p-6 backdrop-blur-sm space-y-6">
+            <h3 class="text-lg font-black text-zinc-50 tracking-tight border-b border-zinc-850 pb-3 flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-violet-500"></span> Moje programy ({purchasedCourses.length})
+            </h3>
+            
+            <div class="space-y-4">
+              {ALL_COURSES.map(c => {
+                const hasPurchased = purchasedCourses.includes(c.title);
+                const isActive = activeCourse === c.title;
+
+                return (
+                  <div class={`p-4 rounded-xl border transition-all ${
+                    isActive 
+                      ? 'border-violet-500/40 bg-violet-950/10' 
+                      : hasPurchased 
+                        ? 'border-zinc-800 bg-zinc-950/40 hover:border-zinc-700' 
+                        : 'border-zinc-900/60 bg-zinc-950/20 opacity-60'
+                  }`}>
+                    <div class="flex items-start justify-between gap-3">
+                      <div>
+                        <span class={`text-[10px] font-bold uppercase tracking-wider block mb-1 ${
+                          isActive ? 'text-violet-400' : hasPurchased ? 'text-emerald-400' : 'text-zinc-650'
+                        }`}>
+                          {isActive ? 'Aktívny workspace' : hasPurchased ? 'Odomknuté' : 'Uzamknuté'}
+                        </span>
+                        <h4 class="text-xs font-bold text-zinc-200 leading-snug">{c.title.replace("Kurz: ", "")}</h4>
+                      </div>
+                      
+                      {hasPurchased ? (
+                        !isActive && (
+                          <a 
+                            href={`/nakupe-uspesny?active_course=${encodeURIComponent(c.title)}`} 
+                            class="text-[10px] font-bold text-violet-400 hover:text-violet-300 shrink-0 border border-violet-500/30 rounded-lg px-2.5 py-1.5 transition-colors"
+                          >
+                            Prepnúť
+                          </a>
+                        )
+                      ) : (
+                        <a 
+                          href="/#courses" 
+                          class="text-[10px] font-bold text-zinc-300 hover:text-zinc-50 shrink-0 bg-zinc-800 border border-zinc-750 hover:bg-zinc-700 rounded-lg px-2.5 py-1.5 transition-colors"
+                        >
+                          Kúpiť
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-zinc-800">
-            <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-              <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-1">WhatsApp Podpora</span>
-              <p class="text-sm text-zinc-300 mb-3">Pripojte sa k našej interaktívnej komunite priamo vo Vašom telefóne.</p>
-              <a href={`https://wa.me/${whatsappSupportNumber}`} target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-zinc-50 font-bold px-4 py-2 text-xs transition-colors">
-                Pripojiť sa na WhatsApp
-              </a>
-            </div>
-            <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
-              <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-1">Materiály na stiahnutie</span>
-              <p class="text-sm text-zinc-300 mb-3">Stiahnite si e-knihu a schému pre integráciu AI agentov.</p>
-              <a href="/materialy-ascentia.pdf" download class="inline-flex items-center gap-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold px-4 py-2 text-xs transition-colors">
-                Stiahnuť PDF (5.2 MB)
-              </a>
-            </div>
+          <!-- Active Course Syllabus -->
+          <div class="rounded-2xl border border-zinc-850 bg-zinc-900/20 p-6 backdrop-blur-sm">
+            <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-widest border-b border-zinc-850 pb-3 mb-4">
+              Osnova programu
+            </h3>
+            <ul class="space-y-4">
+              {courseData.syllabus.map((s, idx) => (
+                <li class="flex items-start gap-3">
+                  <span class={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                    idx === 0 
+                      ? 'bg-violet-500/20 text-violet-400 border border-violet-500/30' 
+                      : 'bg-zinc-950 border border-zinc-850 text-zinc-500'
+                  }`}>
+                    {idx + 1}
+                  </span>
+                  <div>
+                    <span class={`text-xs font-semibold block ${idx === 0 ? 'text-zinc-150' : 'text-zinc-400'}`}>{s}</span>
+                    <span class="text-[10px] text-zinc-500">{idx === 0 ? 'Aktuálna lekcia' : 'Uzamknuté (Splňte lekciu 1)'}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
+
         </div>
+
       </div>
 
     </div>
