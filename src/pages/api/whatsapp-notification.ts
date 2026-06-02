@@ -30,19 +30,18 @@ export const POST: APIRoute = async ({ request }) => {
       const phoneNumber = session.customer_details?.phone || session.metadata?.phone;
       const courseName = session.metadata?.course_name || 'Automatizácia firiem pomocou AI agentov';
 
-      const resendApiKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY;
-      if (resendApiKey && customerEmail) {
+      const agentMailApiKey = import.meta.env.AGENT_MAIL_API_KEY || process.env.AGENT_MAIL_API_KEY;
+      if (agentMailApiKey && customerEmail) {
         try {
-          console.log(`Sending email notification to ${customerEmail}...`);
-          const resendResponse = await fetch('https://api.resend.com/emails', {
+          console.log(`Sending email notification to ${customerEmail} via AgentMail...`);
+          const agentMailResponse = await fetch('https://api.agentmail.to/v0/inboxes/ascentia@agentmail.to/messages/send', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${resendApiKey}`,
+              'Authorization': `Bearer ${agentMailApiKey}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              from: 'Ascentia <onboarding@resend.dev>', // Resend testing domain fallback, or custom domain if configured
-              to: [customerEmail],
+              to: customerEmail,
               subject: `Prístup odomknutý: ${courseName}`,
               html: `
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px; background-color: #fafafa;">
@@ -55,17 +54,17 @@ export const POST: APIRoute = async ({ request }) => {
               `
             })
           });
-          if (resendResponse.ok) {
-            console.log(`Email successfully sent to ${customerEmail} via Resend.`);
+          if (agentMailResponse.ok) {
+            console.log(`Email successfully sent to ${customerEmail} via AgentMail.`);
           } else {
-            const errData = await resendResponse.json();
-            console.error('Failed to send email via Resend:', errData);
+            const errData = await agentMailResponse.json();
+            console.error('Failed to send email via AgentMail:', errData);
           }
         } catch (mailErr: any) {
-          console.error('Error during email sending:', mailErr.message);
+          console.error('Error during email sending via AgentMail:', mailErr.message);
         }
       } else {
-        console.warn('RESEND_API_KEY is not configured or customer email is missing. Skipping email notification.');
+        console.warn('AGENT_MAIL_API_KEY is not configured or customer email is missing. Skipping email notification.');
       }
 
       const whatsappToken = import.meta.env.WHATSAPP_ACCESS_TOKEN || process.env.WHATSAPP_ACCESS_TOKEN;
