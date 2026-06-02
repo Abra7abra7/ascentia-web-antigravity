@@ -16,7 +16,10 @@ const purchasedCourse = Astro.cookies.get('ascentia_purchased_course')?.value;
       {purchasedCourse ? (
         <a href={`/nakupe-uspesny?course=${encodeURIComponent(purchasedCourse)}`} class="transition-colors text-emerald-400 hover:text-emerald-300">Môj Kurz</a>
       ) : (
-        <a href="/#onboarding" class="transition-colors hover:text-zinc-50">AI Sprievodca</a>
+        <>
+          <a href="/#onboarding" class="transition-colors hover:text-zinc-50">AI Sprievodca</a>
+          <a href="/prihlasenie" class="transition-colors text-violet-400 hover:text-violet-300 font-semibold">Prihlásiť sa</a>
+        </>
       )}
       <a href="/vop" class="transition-colors hover:text-zinc-50">Obchodné podmienky</a>
       <a href="/gdpr" class="transition-colors hover:text-zinc-50">GDPR</a>

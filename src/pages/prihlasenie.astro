@@ -1,0 +1,107 @@
+---
+// src/pages/prihlasenie.astro
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Prihlásenie - Ascentia" description="Prihláste sa do svojej členskej sekcie pomocou e-mailu.">
+  <Header />
+
+  <main class="flex-grow py-20 bg-zinc-950 flex items-center justify-center">
+    <div class="w-full max-w-md px-6">
+      <div class="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 shadow-2xl">
+        <div class="text-center mb-8">
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10 border border-violet-500 text-violet-400 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h1 class="text-2xl font-black text-zinc-50 tracking-tight">Prihlásenie do kurzu</h1>
+          <p class="text-zinc-400 text-xs mt-2">
+            Zadajte e-mail, ktorý ste použili pri platbe cez Stripe. Zašleme Vám jednorazový prihlasovací odkaz.
+          </p>
+        </div>
+
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label for="email" class="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-1">
+              E-mailová adresa
+            </label>
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="napr. vas@email.sk"
+              class="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-650 focus:border-violet-500 focus:outline-none"
+            />
+          </div>
+
+          <button
+            type="submit"
+            id="submit-btn"
+            class="w-full rounded-xl bg-violet-600 px-4 py-3 text-sm font-bold text-zinc-50 transition-all hover:bg-violet-700 hover:shadow-[0_0_15px_rgba(124,58,237,0.3)] flex items-center justify-center gap-2"
+          >
+            Odoslať prihlasovací odkaz
+          </button>
+        </form>
+
+        <div id="login-status" class="hidden mt-6 text-center p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+          <p class="text-xs text-zinc-350" id="status-message"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const form = document.getElementById('login-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+  const statusDiv = document.getElementById('login-status');
+  const statusMessage = document.getElementById('status-message');
+
+  if (form && submitBtn && statusDiv && statusMessage) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const emailInput = document.getElementById('email') as HTMLInputElement | null;
+      if (!emailInput) return;
+      const email = emailInput.value.trim();
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Odosielam...
+      `;
+
+      try {
+        const response = await fetch('/api/send-magic-link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+        
+        statusDiv.classList.remove('hidden');
+        if (response.ok) {
+          statusMessage.innerHTML = `<span class="text-emerald-400 font-bold block mb-1">Odkaz bol odoslaný!</span> Ak na tomto e-maile evidujeme nákup, prihlasovací odkaz bol odoslaný. Skontrolujte si doručenú poštu (aj spam).`;
+          form.reset();
+        } else {
+          statusMessage.innerHTML = `<span class="text-red-400 font-bold block mb-1">Chyba:</span> ${data.error || 'Nepodarilo sa odoslať odkaz.'}`;
+        }
+      } catch (err) {
+        statusDiv.classList.remove('hidden');
+        statusMessage.innerHTML = `<span class="text-red-400 font-bold block mb-1">Chyba pripojenia:</span> Skontrolujte pripojenie k internetu.`;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Odoslať prihlasovací odkaz';
+      }
+    });
+  }
+</script>
