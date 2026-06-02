@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 
 // We extract the URL search param or fallback to a default course name
 const courseTitle = Astro.url.searchParams.get('course') || "Prémiový Kurz Ascentia";
+const whatsappSupportNumber = import.meta.env.PUBLIC_WHATSAPP_SUPPORT_NUMBER || import.meta.env.WHATSAPP_SUPPORT_NUMBER || process.env.WHATSAPP_SUPPORT_NUMBER || "421944123456";
 ---
 
 <Layout title="Nákup úspešný - Ascentia" description="Váš prístup k prémiovému vzdelávaniu bol úspešne odomknutý.">
@@ -71,16 +72,16 @@ const courseTitle = Astro.url.searchParams.get('course') || "Prémiový Kurz Asc
             <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
               <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-1">WhatsApp Podpora</span>
               <p class="text-sm text-zinc-300 mb-3">Pripojte sa k našej interaktívnej komunite priamo vo Vašom telefóne.</p>
-              <a href="https://wa.me/mocknumber" target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-zinc-50 font-bold px-4 py-2 text-xs transition-colors">
+              <a href={`https://wa.me/${whatsappSupportNumber}`} target="_blank" class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-zinc-50 font-bold px-4 py-2 text-xs transition-colors">
                 Pripojiť sa na WhatsApp
               </a>
             </div>
             <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
               <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-1">Materiály na stiahnutie</span>
               <p class="text-sm text-zinc-300 mb-3">Stiahnite si e-knihu a schému pre integráciu AI agentov.</p>
-              <button class="inline-flex items-center gap-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold px-4 py-2 text-xs transition-colors">
+              <a href="/materialy-ascentia.pdf" download class="inline-flex items-center gap-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold px-4 py-2 text-xs transition-colors">
                 Stiahnuť PDF (5.2 MB)
-              </button>
+              </a>
             </div>
           </div>
         </div>

@@ -26,8 +26,47 @@ export const POST: APIRoute = async ({ request }) => {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
       const customerName = session.customer_details?.name || 'Vzdelávateľ';
+      const customerEmail = session.customer_details?.email;
       const phoneNumber = session.customer_details?.phone || session.metadata?.phone;
       const courseName = session.metadata?.course_name || 'Automatizácia firiem pomocou AI agentov';
+
+      const resendApiKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY;
+      if (resendApiKey && customerEmail) {
+        try {
+          console.log(`Sending email notification to ${customerEmail}...`);
+          const resendResponse = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${resendApiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: 'Ascentia <onboarding@resend.dev>', // Resend testing domain fallback, or custom domain if configured
+              to: [customerEmail],
+              subject: `Prístup odomknutý: ${courseName}`,
+              html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px; background-color: #fafafa;">
+                  <h2 style="color: #7c3aed;">Gratulujeme, ${customerName}!</h2>
+                  <p>Vaša platba za kurz <strong>${courseName}</strong> prebehla úspešne a Váš prístup bol odomknutý.</p>
+                  <p>Materiály ku kurzu a podrobnosti nájdete vo svojej členskej sekcii.</p>
+                  <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;" />
+                  <p style="font-size: 12px; color: #666;">Tento e-mail bol odoslaný automaticky platformou Ascentia.</p>
+                </div>
+              `
+            })
+          });
+          if (resendResponse.ok) {
+            console.log(`Email successfully sent to ${customerEmail} via Resend.`);
+          } else {
+            const errData = await resendResponse.json();
+            console.error('Failed to send email via Resend:', errData);
+          }
+        } catch (mailErr: any) {
+          console.error('Error during email sending:', mailErr.message);
+        }
+      } else {
+        console.warn('RESEND_API_KEY is not configured or customer email is missing. Skipping email notification.');
+      }
 
       const whatsappToken = import.meta.env.WHATSAPP_ACCESS_TOKEN || process.env.WHATSAPP_ACCESS_TOKEN;
       const whatsappPhoneId = import.meta.env.WHATSAPP_PHONE_NUMBER_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
