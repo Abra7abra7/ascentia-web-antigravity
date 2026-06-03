@@ -22,6 +22,44 @@ export const POST: APIRoute = async ({ request }) => {
       event = JSON.parse(rawBody);
     }
 
+    // Process invoice created (to update custom fields on draft invoice before finalization)
+    if (event.type === 'invoice.created') {
+      const invoice = event.data.object;
+      if (invoice.status === 'draft' && invoice.customer && stripeSecret) {
+        try {
+          const stripeInstance = new Stripe(stripeSecret);
+          // List Checkout Sessions for this customer to find the one with custom fields
+          const sessions = await stripeInstance.checkout.sessions.list({
+            customer: invoice.customer as string,
+            limit: 5,
+          });
+          const session = sessions.data.find(s => s.custom_fields && s.custom_fields.length > 0);
+          if (session && session.custom_fields) {
+            const icoField = session.custom_fields.find((f: any) => f.key === 'ico');
+            const dicField = session.custom_fields.find((f: any) => f.key === 'dic_icdph');
+            const icoValue = icoField?.text?.value;
+            const dicValue = dicField?.text?.value;
+
+            if (icoValue || dicValue) {
+              const invoiceCustomFields = [];
+              if (icoValue) {
+                invoiceCustomFields.push({ name: 'IČO', value: icoValue });
+              }
+              if (dicValue) {
+                invoiceCustomFields.push({ name: 'DIČ / IČ DPH', value: dicValue });
+              }
+              console.log(`Updating draft invoice ${invoice.id} with custom fields:`, invoiceCustomFields);
+              await stripeInstance.invoices.update(invoice.id, {
+                custom_fields: invoiceCustomFields,
+              });
+            }
+          }
+        } catch (err: any) {
+          console.error(`Failed to update invoice ${invoice.id} custom fields:`, err.message);
+        }
+      }
+    }
+
     // Process checkout session completed
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
@@ -29,6 +67,10 @@ export const POST: APIRoute = async ({ request }) => {
       const customerEmail = session.customer_details?.email;
       const phoneNumber = session.customer_details?.phone || session.metadata?.phone;
       const courseName = session.metadata?.course_name || 'Automatizácia firiem pomocou AI agentov';
+
+      const customFields = session.custom_fields || [];
+      const icoValue = customFields.find((f: any) => f.key === 'ico')?.text?.value || '';
+      const dicValue = customFields.find((f: any) => f.key === 'dic_icdph')?.text?.value || '';
 
       const amountTotal = session.amount_total ? (session.amount_total / 100).toFixed(2) : '249.00';
       const orderId = 'ASC-2026-' + session.id.slice(-5).toUpperCase();
@@ -86,6 +128,8 @@ export const POST: APIRoute = async ({ request }) => {
                         <td style="vertical-align: top; width: 50%; padding-bottom: 10px; text-align: right;">
                           <strong>Odberateľ:</strong><br />
                           ${customerName}<br />
+                          ${icoValue ? `IČO: ${icoValue}<br />` : ''}
+                          ${dicValue ? `DIČ / IČ DPH: ${dicValue}<br />` : ''}
                           ${customerEmail}<br />
                           ${phoneNumber ? `Tel: ${phoneNumber}` : ''}
                         </td>
@@ -164,24 +208,30 @@ export const POST: APIRoute = async ({ request }) => {
       console.log('Processed Stripe checkout. Metadata details:', { customerName, phoneNumber, courseName });
 
       if (whatsappToken && !whatsappToken.startsWith('EAABxxx') && whatsappPhoneId && !whatsappPhoneId.startsWith('123456')) {
-        // Real Meta API Call
-        const url = `https://graph.facebook.com/v25.0/${whatsappPhoneId}/messages`;
-        console.log(`Sending real WhatsApp template message via Meta API... Target: ${phoneNumber}`);
-        
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${whatsappToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(metaPayload)
-        });
+        try {
+          // Real Meta API Call
+          const url = `https://graph.facebook.com/v25.0/${whatsappPhoneId}/messages`;
+          console.log(`Sending real WhatsApp template message via Meta API... Target: ${phoneNumber}`);
+          
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${whatsappToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(metaPayload)
+          });
 
-        const responseData = await response.json();
-        console.log('Meta API response:', responseData);
+          const responseData = await response.json();
+          console.log('Meta API response:', responseData);
 
-        if (!response.ok) {
-          throw new Error(`Meta API error: ${JSON.stringify(responseData)}`);
+          if (!response.ok) {
+            console.error(`Meta API error response: ${JSON.stringify(responseData)}`);
+          } else {
+            console.log('WhatsApp notification sent successfully.');
+          }
+        } catch (whatsappErr: any) {
+          console.error('Error sending WhatsApp notification:', whatsappErr.message);
         }
       } else {
         console.warn('WHATSAPP credentials are not configured or are placeholders. Raw notification data logged below:');
