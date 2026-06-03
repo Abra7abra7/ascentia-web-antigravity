@@ -41,6 +41,29 @@ export const POST: APIRoute = async ({ request }) => {
         },
       ],
       mode: 'payment',
+      invoice_creation: {
+        enabled: true,
+      },
+      custom_fields: [
+        {
+          key: 'ico',
+          label: {
+            type: 'custom',
+            custom: 'IČO (nepovinné - len pre firmy)',
+          },
+          type: 'text',
+          optional: true,
+        },
+        {
+          key: 'dic_icdph',
+          label: {
+            type: 'custom',
+            custom: 'DIČ / IČ DPH (nepovinné - len pre firmy)',
+          },
+          type: 'text',
+          optional: true,
+        },
+      ],
       success_url: `${origin}/nakupe-uspesny?course=${encodeURIComponent(courseName)}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/`,
       metadata: {

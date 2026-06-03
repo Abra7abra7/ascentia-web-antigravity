@@ -33,6 +33,19 @@ export const POST: APIRoute = async ({ request }) => {
       const amountTotal = session.amount_total ? (session.amount_total / 100).toFixed(2) : '249.00';
       const orderId = 'ASC-2026-' + session.id.slice(-5).toUpperCase();
 
+      // Retrieve Stripe Invoice PDF link if available
+      let invoicePdfUrl = '';
+      if (session.invoice && stripeSecret) {
+        try {
+          const stripeInstance = new Stripe(stripeSecret);
+          const invoice = await stripeInstance.invoices.retrieve(session.invoice as string);
+          invoicePdfUrl = invoice.invoice_pdf || '';
+          console.log(`Retrieved Stripe Invoice PDF URL: ${invoicePdfUrl}`);
+        } catch (invoiceErr: any) {
+          console.error('Failed to retrieve invoice from Stripe:', invoiceErr.message);
+        }
+      }
+
       const agentMailApiKey = import.meta.env.AGENT_MAIL_API_KEY || process.env.AGENT_MAIL_API_KEY;
       if (agentMailApiKey && customerEmail) {
         try {
@@ -90,6 +103,12 @@ export const POST: APIRoute = async ({ request }) => {
                       </tr>
                     </table>
                   </div>
+
+                  ${invoicePdfUrl ? `
+                  <div style="text-align: center; margin: 25px 0;">
+                    <a href="${invoicePdfUrl}" style="display: inline-block; background-color: #7c3aed; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px;">Stiahnuť originálnu faktúru (PDF)</a>
+                  </div>
+                  ` : ''}
 
                   <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;" />
                   <p style="font-size: 11px; color: #777; text-align: center; margin: 0;">
